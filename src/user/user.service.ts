@@ -1,26 +1,68 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { UserEntity } from './entities/user.entity';
+import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { MessagesHelper } from '../helpers/messages.helper';
 
 @Injectable()
 export class UserService {
-    create(createUserDto: CreateUserDto) {
-        return 'This action adds a new user';
+    constructor(
+        @InjectRepository(UserEntity)
+        private readonly userRepository: Repository<UserEntity>,
+    ) {}
+
+    async create(createUserDto: CreateUserDto): Promise<UserEntity> {
+        const user = this.userRepository.create(createUserDto);
+        return await this.userRepository.save(user);
     }
 
-    findAll() {
-        return `This action returns all user`;
+    async findAll(): Promise<UserEntity[]> {
+        return await this.userRepository.find({
+            select: [
+                'id',
+                'firstName',
+                'lastName',
+                'email',
+                'phone',
+                'isActive',
+            ],
+        });
     }
 
-    findOne(id: number) {
-        return `This action returns a #${id} user`;
+    async findOne(id: number): Promise<UserEntity> {
+        const user = await this.userRepository.findOne({
+            where: { id },
+            select: [
+                'id',
+                'firstName',
+                'lastName',
+                'email',
+                'phone',
+                'isActive',
+            ],
+        });
+        if (!user) {
+            throw new NotFoundException(MessagesHelper.USER_NOT_FOUND);
+        }
+        return user;
     }
 
-    update(id: number, updateUserDto: UpdateUserDto) {
-        return `This action updates a #${id} user`;
+    async update(
+        id: number,
+        updateUserDto: UpdateUserDto,
+    ): Promise<UserEntity> {
+        await this.findOne(id);
+        await this.userRepository.update(id, updateUserDto);
+        return this.findOne(id);
     }
 
-    remove(id: number) {
-        return `This action removes a #${id} user`;
+    async remove(id: number) {
+        await this.findOne(id);
+        await this.userRepository.update(id, {
+            isActive: false,
+            deletedAt: new Date(),
+        });
     }
 }
