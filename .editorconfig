@@ -1,0 +1,23 @@
+# EditorConfig is awesome: https://EditorConfig.org
+
+# top-most EditorConfig file
+root = true
+
+# Matches multiple files with brace expansion notation
+# Set default charset
+[*.{js,ts,tsx,json}]
+charset = utf-8
+
+# Indentation style and size for JavaScript and TypeScript files
+indent_style = space
+indent_size = 4
+
+# Ensure newline at the end of file and trim trailing whitespace
+end_of_line = lf
+trim_trailing_whitespace = true
+insert_final_newline = true
+
+# Matches the exact files either package.json or .editorconfig
+[{package.json,.editorconfig}]
+indent_style = space
+indent_size = 2
