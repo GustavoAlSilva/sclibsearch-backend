@@ -49,6 +49,10 @@ export class UserService {
         return user;
     }
 
+    async findByEmail(email: string): Promise<UserEntity | undefined> {
+        return this.userRepository.findOne({ where: { email } });
+    }
+
     async update(
         id: number,
         updateUserDto: UpdateUserDto,
