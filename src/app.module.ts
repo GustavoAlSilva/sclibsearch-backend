@@ -4,6 +4,7 @@ import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { UserModule } from './user/user.module';
 import { BookModule } from './book/book.module';
 import { RentalModule } from './rental/rental.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
     imports: [
@@ -24,6 +25,7 @@ import { RentalModule } from './rental/rental.module';
         UserModule,
         BookModule,
         RentalModule,
+        AuthModule,
     ],
     controllers: [],
     providers: [],
